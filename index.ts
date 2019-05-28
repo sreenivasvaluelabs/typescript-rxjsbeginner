@@ -1,6 +1,6 @@
 // Import stylesheets
 import './style.css';
-import { Observable, of, from, fromEvent, concat, interval } from 'rxjs';
+import { Observable, of, from, fromEvent, concat, interval , throwError,Subject} from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import { allBooks, allReaders } from './book';
 import { map, mergeMap, filter, tap, catchError, take, takeUntil } from 'rxjs/operators';
@@ -180,12 +180,31 @@ import { map, mergeMap, filter, tap, catchError, take, takeUntil } from 'rxjs/op
 //   );
 
 
-let source$= of(1,2,3,4,5);
-function doubleOperator(){
-return map(value => value *2);
-}
-source$.pipe(
-  doubleOperator()
-).subscribe(
-  doubleValue => console.log(doubleValue)
+// let source$= of(1,2,3,4,5);
+// function doubleOperator(){
+// return map(value => value *2);
+// }
+// source$.pipe(
+//   doubleOperator()
+// ).subscribe(
+//   doubleValue => console.log(doubleValue)
+// );
+
+
+let subject$ = new Subject();
+
+subject$.subscribe(
+  value => console.log(`Observer 1: ${value}`)
 );
+
+subject$.subscribe(
+  value => console.log(`Observer 2: ${value}`)
+);
+
+subject$.next('Hello!');
+
+let source$ = new Observable(subscriber => {
+  subscriber.next('Greetings!');
+});
+
+source$.subscribe(subject$);
